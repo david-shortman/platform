@@ -12,6 +12,9 @@ import {
   StateObservable,
   Store,
   setNgrxMockEnvironment,
+  MemoizedSelector,
+  DefaultProjectorFn,
+  createSelector,
 } from '@ngrx/store';
 import { MockStore } from './mock_store';
 import { MockReducerManager } from './mock_reducer_manager';
@@ -155,6 +158,18 @@ function mockStoreFactory<T>(
 export function getMockStore<T>(config: MockStoreConfig<T> = {}): MockStore<T> {
   const injector = Injector.create({ providers: provideMockStore(config) });
   return injector.get(MockStore);
+}
+
+export function testProjector<
+  State,
+  S extends unknown[],
+  Args extends S,
+  Result
+>(
+  selector: MemoizedSelector<State, Result, DefaultProjectorFn<Result>, S>,
+  ...args: [...Args]
+) {
+  return selector.projector(...args);
 }
 
 export { MockReducerManager } from './mock_reducer_manager';

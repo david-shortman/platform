@@ -20,7 +20,8 @@ export type DefaultProjectorFn<T> = (...args: any[]) => T;
 export interface MemoizedSelector<
   State,
   Result,
-  ProjectorFn = DefaultProjectorFn<Result>
+  ProjectorFn = DefaultProjectorFn<Result>,
+  S extends unknown[] = any[]
 > extends Selector<State, Result> {
   release(): void;
   projector: ProjectorFn;
@@ -125,7 +126,7 @@ export function defaultMemoize(
 export function createSelector<State, S extends unknown[], Result>(
   ...args: [...Selector<State, unknown>[], unknown] &
     [...{ [i in keyof S]: Selector<State, S[i]> }, (...s: S) => Result]
-): MemoizedSelector<State, Result>;
+): MemoizedSelector<State, Result, DefaultProjectorFn<Result>, S>;
 
 /**
  * @deprecated Selectors with props are deprecated, for more info see {@link https://github.com/ngrx/platform/issues/2980 Github Issue}
@@ -273,7 +274,7 @@ export function createSelector<State, S extends unknown[], Result>(
   selectors: Selector<State, unknown>[] &
     [...{ [i in keyof S]: Selector<State, S[i]> }],
   projector: (...s: S) => Result
-): MemoizedSelector<State, Result>;
+): MemoizedSelector<State, Result, DefaultProjectorFn<Result>, S>;
 
 /**
  * @deprecated Selectors with props are deprecated, for more info see {@link https://github.com/ngrx/platform/issues/2980 Github Issue}
