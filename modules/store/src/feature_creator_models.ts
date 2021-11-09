@@ -1,4 +1,4 @@
-import { MemoizedSelector } from './selector';
+import { DefaultProjectorFn, MemoizedSelector } from './selector';
 import { Primitive } from './models';
 
 // Generating documentation for `createFeature` function is solved by moving types that use
@@ -13,7 +13,9 @@ export type FeatureSelector<
 > = {
   [K in FeatureName as `select${Capitalize<K>}State`]: MemoizedSelector<
     AppState,
-    FeatureState
+    FeatureState,
+    DefaultProjectorFn<FeatureState>,
+    [state: AppState]
   >;
 };
 
@@ -26,6 +28,8 @@ export type NestedSelectors<
       [K in keyof FeatureState &
         string as `select${Capitalize<K>}`]: MemoizedSelector<
         AppState,
-        FeatureState[K]
+        FeatureState[K],
+        DefaultProjectorFn<FeatureState[K]>,
+        [featureState: FeatureState]
       >;
     };

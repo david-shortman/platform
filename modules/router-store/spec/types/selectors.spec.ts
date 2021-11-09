@@ -39,7 +39,7 @@ describe('router selectors', () => {
       );
     `).toInfer(
       'selector',
-      'MemoizedSelector<State, any, DefaultProjectorFn<any>>'
+      'MemoizedSelector<State, any, DefaultProjectorFn<any>, [route: any]>'
     );
   });
 

@@ -69,7 +69,7 @@ describe('createFeature()', () => {
       snippet.toInfer('reducer', 'ActionReducer<State, Action>');
       snippet.toInfer(
         'selectProductsState',
-        'MemoizedSelector<Record<string, any>, State, DefaultProjectorFn<State>>'
+        'MemoizedSelector<Record<string, any>, State, DefaultProjectorFn<State>, [state: Record<string, any>]>'
       );
       snippet.toInfer(
         'selectProducts',

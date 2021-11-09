@@ -619,7 +619,7 @@ export function createSelectorFactory(
 
 export function createFeatureSelector<T>(
   featureName: string
-): MemoizedSelector<object, T>;
+): MemoizedSelector<object, T, DefaultProjectorFn<T>, [state: unknown]>;
 /**
  * @deprecated  Feature selectors with a root state are deprecated, for more info see {@link https://github.com/ngrx/platform/issues/3179 Github Issue}
  */
