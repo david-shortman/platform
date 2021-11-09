@@ -209,7 +209,7 @@ describe('createFeature()', () => {
       );
       snippet.toInfer(
         'selectLoadState',
-        'MemoizedSelector<AppState, LoadState, DefaultProjectorFn<LoadState>>'
+        'MemoizedSelector<AppState, LoadState, ProjectorFn<[featureState: BookState], LoadState>>'
       );
       snippet.toInfer(
         'booksFeatureKeys',
