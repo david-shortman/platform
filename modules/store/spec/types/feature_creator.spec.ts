@@ -73,7 +73,7 @@ describe('createFeature()', () => {
       );
       snippet.toInfer(
         'selectProducts',
-        'MemoizedSelector<Record<string, any>, string[] | null, DefaultProjectorFn<string[] | null>>'
+        'MemoizedSelector<Record<string, any>, string[] | null, DefaultProjectorFn<string[] | null>, [featureState: State]>'
       );
       snippet.toInfer(
         'selectQuery',
