@@ -77,7 +77,7 @@ describe('createFeature()', () => {
       );
       snippet.toInfer(
         'selectQuery',
-        'MemoizedSelector<Record<string, any>, string, DefaultProjectorFn<string>>'
+        'MemoizedSelector<Record<string, any>, string, DefaultProjectorFn<string>, [featureState: State]>'
       );
       snippet.toInfer(
         'productsFeatureKeys',
@@ -201,7 +201,7 @@ describe('createFeature()', () => {
       snippet.toInfer('reducer', 'ActionReducer<BooksState, Action>');
       snippet.toInfer(
         'selectBooksState',
-        'MemoizedSelector<AppState, BooksState, DefaultProjectorFn<BooksState>>'
+        'MemoizedSelector<AppState, BooksState, DefaultProjectorFn<BooksState>, [state: AppState]>'
       );
       snippet.toInfer(
         'selectBooks',

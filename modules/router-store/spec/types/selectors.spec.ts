@@ -64,7 +64,7 @@ describe('router selectors', () => {
       );
     `).toInfer(
       'selector',
-      'MemoizedSelector<State, string, DefaultProjectorFn<string>>'
+      'MemoizedSelector<State, string, DefaultProjectorFn<string>, [id: string]>'
     );
   });
 
@@ -76,7 +76,7 @@ describe('router selectors', () => {
       );
     `).toInfer(
       'selector',
-      'MemoizedSelector<State, Params, DefaultProjectorFn<Params>>'
+      'MemoizedSelector<State, Params, DefaultProjectorFn<Params>, [params: Params]>'
     );
   });
 
@@ -89,7 +89,7 @@ describe('router selectors', () => {
       );
     `).toInfer(
       'selector',
-      'MemoizedSelector<State, string, DefaultProjectorFn<string>>'
+      'MemoizedSelector<State, string, DefaultProjectorFn<string>, [id: string]>'
     );
   });
 
@@ -101,7 +101,7 @@ describe('router selectors', () => {
       );
     `).toInfer(
       'selector',
-      'MemoizedSelector<State, Data, DefaultProjectorFn<Data>>'
+      'MemoizedSelector<State, Data, DefaultProjectorFn<Data>, [data: Data]>'
     );
   });
 
@@ -113,7 +113,7 @@ describe('router selectors', () => {
       );
     `).toInfer(
       'selector',
-      'MemoizedSelector<State, string, DefaultProjectorFn<string>>'
+      'MemoizedSelector<State, string, DefaultProjectorFn<string>, [url: string]>'
     );
   });
 });
