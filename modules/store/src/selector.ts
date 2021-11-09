@@ -17,17 +17,24 @@ export type ComparatorFn = (a: any, b: any) => boolean;
 
 export type DefaultProjectorFn<T> = (...args: any[]) => T;
 
+export type ProjectorFn<Args extends unknown[], T> = (...args: Args) => T;
+
 export interface MemoizedSelector<
   State,
   Result,
-  ProjectorFn = DefaultProjectorFn<Result>,
-  ProjectorArgs extends unknown[] = unknown[]
+  ProjectorFn = DefaultProjectorFn<Result>
 > extends Selector<State, Result> {
   release(): void;
-  projector(...args: ProjectorArgs): Result;
+  /** @deprecated A projector must take at least 1 argument */
+  projector(): never;
+  projector(
+    ...args: ProjectorFn extends (...args: unknown[]) => unknown
+      ? Parameters<ProjectorFn>
+      : never
+  ): Result;
   /** @deprecated Only use valid arguments for the selector's projector */
   projector(
-    ...args: ProjectorFn extends (...args: infer Args) => unknown ? Args : any[]
+    ...args: any[]
   ): ProjectorFn extends (...args: unknown[]) => infer R ? R : Result;
   setResult: (result?: Result) => void;
   clearResult: () => void;
@@ -130,7 +137,7 @@ export function defaultMemoize(
 export function createSelector<State, S extends unknown[], Result>(
   ...args: [...Selector<State, unknown>[], unknown] &
     [...{ [i in keyof S]: Selector<State, S[i]> }, (...s: S) => Result]
-): MemoizedSelector<State, Result, DefaultProjectorFn<Result>, S>;
+): MemoizedSelector<State, Result, ProjectorFn<S, Result>>;
 
 /**
  * @deprecated Selectors with props are deprecated, for more info see {@link https://github.com/ngrx/platform/issues/2980 Github Issue}
@@ -278,7 +285,7 @@ export function createSelector<State, S extends unknown[], Result>(
   selectors: Selector<State, unknown>[] &
     [...{ [i in keyof S]: Selector<State, S[i]> }],
   projector: (...s: S) => Result
-): MemoizedSelector<State, Result, DefaultProjectorFn<Result>, S>;
+): MemoizedSelector<State, Result, ProjectorFn<S, Result>>;
 
 /**
  * @deprecated Selectors with props are deprecated, for more info see {@link https://github.com/ngrx/platform/issues/2980 Github Issue}
@@ -619,7 +626,7 @@ export function createSelectorFactory(
 
 export function createFeatureSelector<T>(
   featureName: string
-): MemoizedSelector<object, T, DefaultProjectorFn<T>, [state: unknown]>;
+): MemoizedSelector<object, T, ProjectorFn<[state: Record<string, any>], T>>;
 /**
  * @deprecated  Feature selectors with a root state are deprecated, for more info see {@link https://github.com/ngrx/platform/issues/3179 Github Issue}
  */
