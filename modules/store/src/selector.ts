@@ -19,23 +19,24 @@ export type DefaultProjectorFn<T> = (...args: any[]) => T;
 
 export type ProjectorFn<Args extends unknown[], T> = (...args: Args) => T;
 
+export interface StrictMemoizedSelector<
+  Args extends unknown[],
+  Result,
+  State = unknown
+> extends MemoizedSelector<State, Result, (...args: Args) => Result> {
+  release(): void;
+  projector(...args: Args): Result;
+  setResult: (result?: Result) => void;
+  clearResult: () => void;
+}
+
 export interface MemoizedSelector<
   State,
   Result,
-  ProjectorFn = DefaultProjectorFn<Result>
+  Projector = DefaultProjectorFn<Result>
 > extends Selector<State, Result> {
   release(): void;
-  /** @deprecated A projector must take at least 1 argument */
-  projector(): never;
-  projector(
-    ...args: ProjectorFn extends (...args: unknown[]) => unknown
-      ? Parameters<ProjectorFn>
-      : never
-  ): Result;
-  /** @deprecated Only use valid arguments for the selector's projector */
-  projector(
-    ...args: any[]
-  ): ProjectorFn extends (...args: unknown[]) => infer R ? R : Result;
+  projector: Projector;
   setResult: (result?: Result) => void;
   clearResult: () => void;
 }
@@ -134,10 +135,29 @@ export function defaultMemoize(
   return { memoized, reset, setResult, clearResult };
 }
 
+export function createSelector<
+  State,
+  Slices extends unknown[],
+  Result,
+  IsStrict extends boolean
+>(
+  ...args: [...Selector<State, unknown>[], unknown, unknown] &
+    [
+      ...{ [i in keyof Slices]: Selector<State, Slices[i]> },
+      (...s: Slices) => Result,
+      { strict: IsStrict }
+    ]
+): IsStrict extends true
+  ? StrictMemoizedSelector<Slices, Result, State>
+  : MemoizedSelector<State, Result>;
+
 export function createSelector<State, Slices extends unknown[], Result>(
   ...args: [...Selector<State, unknown>[], unknown] &
-    [...{ [i in keyof Slices]: Selector<State, Slices[i]> }, (...s: Slices) => Result]
-): MemoizedSelector<State, Result, ProjectorFn<Slices, Result>>;
+    [
+      ...{ [i in keyof Slices]: Selector<State, Slices[i]> },
+      (...s: Slices) => Result
+    ]
+): MemoizedSelector<State, Result>;
 
 /**
  * @deprecated Selectors with props are deprecated, for more info see {@link https://github.com/ngrx/platform/issues/2980 Github Issue}
@@ -280,6 +300,20 @@ export function createSelector<
     props: Props
   ) => Result
 ): MemoizedSelectorWithProps<State, Props, Result>;
+
+export function createSelector<
+  State,
+  Slices extends unknown[],
+  Result,
+  IsStrict extends boolean
+>(
+  selectors: Selector<State, unknown>[] &
+    [...{ [i in keyof Slices]: Selector<State, Slices[i]> }],
+  projector: (...s: Slices) => Result,
+  options: { strict: IsStrict }
+): IsStrict extends true
+  ? StrictMemoizedSelector<Slices, Result, State>
+  : MemoizedSelector<State, Result>;
 
 export function createSelector<State, Slices extends unknown[], Result>(
   selectors: Selector<State, unknown>[] &

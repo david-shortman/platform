@@ -36,6 +36,7 @@ export {
   MemoizeFn,
   MemoizedProjection,
   MemoizedSelector,
+  StrictMemoizedSelector,
   MemoizedSelectorWithProps,
   resultMemoize,
   DefaultProjectorFn,
