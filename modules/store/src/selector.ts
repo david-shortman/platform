@@ -134,10 +134,10 @@ export function defaultMemoize(
   return { memoized, reset, setResult, clearResult };
 }
 
-export function createSelector<State, S extends unknown[], Result>(
+export function createSelector<State, Slices extends unknown[], Result>(
   ...args: [...Selector<State, unknown>[], unknown] &
-    [...{ [i in keyof S]: Selector<State, S[i]> }, (...s: S) => Result]
-): MemoizedSelector<State, Result, ProjectorFn<S, Result>>;
+    [...{ [i in keyof Slices]: Selector<State, Slices[i]> }, (...s: Slices) => Result]
+): MemoizedSelector<State, Result, ProjectorFn<Slices, Result>>;
 
 /**
  * @deprecated Selectors with props are deprecated, for more info see {@link https://github.com/ngrx/platform/issues/2980 Github Issue}
@@ -281,11 +281,11 @@ export function createSelector<
   ) => Result
 ): MemoizedSelectorWithProps<State, Props, Result>;
 
-export function createSelector<State, S extends unknown[], Result>(
+export function createSelector<State, Slices extends unknown[], Result>(
   selectors: Selector<State, unknown>[] &
-    [...{ [i in keyof S]: Selector<State, S[i]> }],
-  projector: (...s: S) => Result
-): MemoizedSelector<State, Result, ProjectorFn<S, Result>>;
+    [...{ [i in keyof Slices]: Selector<State, Slices[i]> }],
+  projector: (...s: Slices) => Result
+): MemoizedSelector<State, Result, ProjectorFn<Slices, Result>>;
 
 /**
  * @deprecated Selectors with props are deprecated, for more info see {@link https://github.com/ngrx/platform/issues/2980 Github Issue}
