@@ -1,17 +1,15 @@
-import {
-  ChangeDetectorRef,
-  ErrorHandler,
-  NgZone,
-  OnDestroy,
-  Pipe,
-  PipeTransform,
-} from '@angular/core';
-import { NextObserver, ObservableInput, Unsubscribable } from 'rxjs';
-import { CdAware, createCdAware } from '../core/cd-aware/cd-aware_creator';
-import { createRender } from '../core/cd-aware/creator_render';
+import { ErrorHandler, OnDestroy, Pipe, PipeTransform } from '@angular/core';
+import { Unsubscribable } from 'rxjs';
+import { ObservableOrPromise } from '../core/potential-observable';
+import { createRenderScheduler } from '../core/render-scheduler';
+import { createRenderEventManager } from '../core/render-event/manager';
+
+type PushPipeResult<PO> = PO extends ObservableOrPromise<infer R>
+  ? R | undefined
+  : PO;
 
 /**
- * @ngModule ReactiveComponentModule
+ * @ngModule PushModule
  *
  * @description
  *
@@ -19,36 +17,14 @@ import { createRender } from '../core/cd-aware/creator_render';
  * It contains intelligent handling of change detection to enable us
  * running in zone-full as well as zone-less mode without any changes to the code.
  *
- * The current way of binding an observable to the view looks like that:
- *  ```html
- *  {{observable$ | async}}
- * <ng-container *ngIf="observable$ | async as o">{{o}}</ng-container>
- * <component [value]="observable$ | async"></component>
- * ```
- *
- * The problem is `async` pipe just marks the component and all its ancestors as dirty.
- * It needs zone.js microtask queue to exhaust until `ApplicationRef.tick` is called to render_creator all dirty marked
- *     components.
- *
- * Heavy dynamic and interactive UIs suffer from zones change detection a lot and can
- * lean to bad performance or even unusable applications, but the `async` pipe does not work in zone-less mode.
- *
- * `ngrxPush` pipe solves that problem.
- *
- * Included Features:
- *  - Take observables or promises, retrieve their values and render_creator the value to the template
- *  - Handling null and undefined values in a clean unified/structured way
- *  - Triggers change-detection differently if `zone.js` is present or not (`detectChanges` or `markForCheck`)
- *  - Distinct same values in a row to increase performance
- *  - Coalescing of change detection calls to boost performance
- *
  * @usageNotes
  *
- * `ngrxPush` pipe solves that problem. It can be used like shown here:
  * ```html
- * {{observable$ | ngrxPush}}
- * <ng-container *ngIf="observable$ | ngrxPush as o">{{o}}</ng-container>
- * <component [value]="observable$ | ngrxPush"></component>
+ * <p>{{ number$ | ngrxPush }}</p>
+ *
+ * <ng-container *ngIf="number$ | ngrxPush as n">{{ n }}</ng-container>
+ *
+ * <app-number [number]="number$ | ngrxPush"></app-number>
  * ```
  *
  * @publicApi
@@ -56,41 +32,46 @@ import { createRender } from '../core/cd-aware/creator_render';
 @Pipe({ name: 'ngrxPush', pure: false })
 export class PushPipe implements PipeTransform, OnDestroy {
   private renderedValue: unknown;
-
+  private readonly renderScheduler = createRenderScheduler();
+  private readonly renderEventManager = createRenderEventManager({
+    suspense: (event) => this.setRenderedValue(undefined, event.synchronous),
+    next: (event) => this.setRenderedValue(event.value, event.synchronous),
+    error: (event) => {
+      if (event.reset) {
+        this.setRenderedValue(undefined, event.synchronous);
+      }
+      this.errorHandler.handleError(event.error);
+    },
+    complete: (event) => {
+      if (event.reset) {
+        this.setRenderedValue(undefined, event.synchronous);
+      }
+    },
+  });
   private readonly subscription: Unsubscribable;
-  private readonly cdAware: CdAware<unknown>;
-  private readonly resetContextObserver: NextObserver<void> = {
-    next: () => (this.renderedValue = undefined),
-  };
-  private readonly updateViewContextObserver: NextObserver<unknown> = {
-    next: (value) => (this.renderedValue = value),
-  };
 
-  constructor(
-    cdRef: ChangeDetectorRef,
-    ngZone: NgZone,
-    errorHandler: ErrorHandler
-  ) {
-    this.cdAware = createCdAware({
-      render: createRender({ cdRef, ngZone }),
-      updateViewContextObserver: this.updateViewContextObserver,
-      resetContextObserver: this.resetContextObserver,
-      errorHandler,
-    });
-    this.subscription = this.cdAware.subscribe({});
+  constructor(private readonly errorHandler: ErrorHandler) {
+    this.subscription = this.renderEventManager
+      .handlePotentialObservableChanges()
+      .subscribe();
   }
 
-  transform<T>(potentialObservable: null): null;
-  transform<T>(potentialObservable: undefined): undefined;
-  transform<T>(potentialObservable: ObservableInput<T>): T | undefined;
-  transform<T>(
-    potentialObservable: ObservableInput<T> | null | undefined
-  ): T | null | undefined {
-    this.cdAware.nextPotentialObservable(potentialObservable);
-    return this.renderedValue as T | null | undefined;
+  transform<PO>(potentialObservable: PO): PushPipeResult<PO> {
+    this.renderEventManager.nextPotentialObservable(potentialObservable);
+    return this.renderedValue as PushPipeResult<PO>;
   }
 
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
+  }
+
+  private setRenderedValue(value: unknown, isSyncEvent: boolean): void {
+    if (value !== this.renderedValue) {
+      this.renderedValue = value;
+
+      if (!isSyncEvent) {
+        this.renderScheduler.schedule();
+      }
+    }
   }
 }

@@ -114,6 +114,10 @@
                 {
                   "title": "Feature Creators",
                   "url": "guide/store/feature-creators"
+                },
+                {
+                  "title": "Action Groups",
+                  "url": "guide/store/action-groups"
                 }
               ]
             },
@@ -142,32 +146,6 @@
             {
               "title": "Testing",
               "url": "guide/store/testing"
-            }
-          ]
-        },
-        {
-          "title": "@ngrx/store-devtools",
-          "children": [
-            {
-              "title": "Overview",
-              "url": "guide/store-devtools"
-            },
-            {
-              "title": "Installation",
-              "url": "guide/store-devtools/install"
-            },
-            {
-              "title": "Instrumentation",
-              "url": "guide/store-devtools/config"
-            },
-            {
-              "title": "Recipes",
-              "children": [
-                {
-                  "title": "Exclude from Production",
-                  "url": "guide/store-devtools/recipes/exclude"
-                }
-              ]
             }
           ]
         },
@@ -252,56 +230,6 @@
           ]
         },
         {
-          "title": "@ngrx/schematics",
-          "children": [
-            {
-              "title": "Overview",
-              "url": "guide/schematics"
-            },
-            {
-              "title": "Installation",
-              "url": "guide/schematics/install"
-            },
-            {
-              "title": "Schematics",
-              "children": [
-                {
-                  "title": "Store",
-                  "url": "guide/schematics/store"
-                },
-                {
-                  "title": "Action",
-                  "url": "guide/schematics/action"
-                },
-                {
-                  "title": "Reducer",
-                  "url": "guide/schematics/reducer"
-                },
-                {
-                  "title": "Selector",
-                  "url": "guide/schematics/selector"
-                },
-                {
-                  "title": "Container",
-                  "url": "guide/schematics/container"
-                },
-                {
-                  "title": "Effect",
-                  "url": "guide/schematics/effect"
-                },
-                {
-                  "title": "Entity",
-                  "url": "guide/schematics/entity"
-                },
-                {
-                  "title": "Feature",
-                  "url": "guide/schematics/feature"
-                }
-              ]
-            }
-          ]
-        },
-        {
           "title": "@ngrx/component-store",
           "children": [
             {
@@ -332,6 +260,10 @@
                   "url": "guide/component-store/effect"
                 }
               ]
+            },
+            {
+              "title": "Lifecycle",
+              "url": "guide/component-store/lifecycle"
             },
             {
               "title": "ComponentStore vs Store",
@@ -456,21 +388,115 @@
       ]
     },
     {
+      "title": "Developer Tools",
+      "children": [
+        {
+          "title": "@ngrx/store-devtools",
+          "children": [
+            {
+              "title": "Overview",
+              "url": "guide/store-devtools"
+            },
+            {
+              "title": "Installation",
+              "url": "guide/store-devtools/install"
+            },
+            {
+              "title": "Instrumentation",
+              "url": "guide/store-devtools/config"
+            },
+            {
+              "title": "Recipes",
+              "children": [
+                {
+                  "title": "Exclude from Production",
+                  "url": "guide/store-devtools/recipes/exclude"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "@ngrx/schematics",
+          "children": [
+            {
+              "title": "Overview",
+              "url": "guide/schematics"
+            },
+            {
+              "title": "Installation",
+              "url": "guide/schematics/install"
+            },
+            {
+              "title": "Schematics",
+              "children": [
+                {
+                  "title": "Store",
+                  "url": "guide/schematics/store"
+                },
+                {
+                  "title": "Action",
+                  "url": "guide/schematics/action"
+                },
+                {
+                  "title": "Reducer",
+                  "url": "guide/schematics/reducer"
+                },
+                {
+                  "title": "Selector",
+                  "url": "guide/schematics/selector"
+                },
+                {
+                  "title": "Container",
+                  "url": "guide/schematics/container"
+                },
+                {
+                  "title": "Effect",
+                  "url": "guide/schematics/effect"
+                },
+                {
+                  "title": "Entity",
+                  "url": "guide/schematics/entity"
+                },
+                {
+                  "title": "Feature",
+                  "url": "guide/schematics/feature"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "@ngrx/eslint-plugin",
+          "children": [
+            {
+              "title": "Overview",
+              "url": "guide/eslint-plugin"
+            },
+            {
+              "title": "Installation",
+              "url": "guide/eslint-plugin/install"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "title": "Recipes",
       "children": [
         {
           "title": "Nightly Builds",
           "url": "guide/nightlies"
-        },
-        {
-          "title": "ESLint NgRx Plugin",
-          "url": "guide/eslint-plugin"
         }
       ]
     },
     {
       "title": "Migrations",
       "children": [
+        {
+          "title": "V14",
+          "url": "guide/migration/v14"
+        },
         {
           "title": "V13",
           "url": "guide/migration/v13"
@@ -599,6 +625,10 @@
     }
   ],
   "docVersions": [
+    {
+      "title": "v13",
+      "url": "https://v13.ngrx.io"
+    },
     {
       "title": "v12",
       "url": "https://v12.ngrx.io"

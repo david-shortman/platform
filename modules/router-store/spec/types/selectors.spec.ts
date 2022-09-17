@@ -24,6 +24,7 @@ describe('router selectors', () => {
         selectRouteParam,
         selectRouteData,
         selectUrl,
+        selectTitle,
       } = fromRouter.getSelectors(selectRouter);
 
       ${code}
@@ -108,6 +109,18 @@ describe('router selectors', () => {
     `).toInfer(
       'selector',
       'MemoizedSelector<State, string, (s1: string) => string>'
+    );
+  });
+
+  it('selectTitle should return string', () => {
+    expectSnippet(`
+      export const selector = createSelector(
+        selectTitle,
+        url => url
+      );
+    `).toInfer(
+      'selector',
+      'MemoizedSelector<State, string, DefaultProjectorFn<string>>'
     );
   });
 });

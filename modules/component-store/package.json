@@ -1,6 +1,6 @@
 {
   "name": "@ngrx/component-store",
-  "version": "13.0.2",
+  "version": "14.3.1",
   "description": "Reactive store for component state",
   "repository": {
     "type": "git",
@@ -22,8 +22,8 @@
   },
   "homepage": "https://github.com/ngrx/platform#readme",
   "peerDependencies": {
-    "@angular/core": "^13.0.0",
-    "rxjs": "^6.5.3 || ^7.4.0"
+    "@angular/core": "^14.0.0",
+    "rxjs": "^6.5.3 || ^7.5.0"
   },
   "schematics": "./schematics/collection.json",
   "sideEffects": false,
@@ -37,7 +37,8 @@
       "@ngrx/schematics",
       "@ngrx/store-devtools",
       "@ngrx/component-store",
-      "@ngrx/component"
+      "@ngrx/component",
+      "@ngrx/eslint-plugin"
     ],
     "migrations": "./migrations/migration.json"
   },

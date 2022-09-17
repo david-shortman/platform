@@ -1,3 +1,231 @@
+<a name="14.3.1"></a>
+
+## [14.3.1](https://github.com/ngrx/platform/compare/14.3.0...14.3.1) (2022-09-08)
+
+### Bug Fixes
+
+- add support for TypeScript 4.8 ([#3548](https://github.com/ngrx/platform/issues/3548)) ([d558ce1](https://github.com/ngrx/platform/commit/d558ce1)), closes [#3547](https://github.com/ngrx/platform/issues/3547)
+- **eslint-plugin:** avoid-mapping-selectors don't report on ThisExpression ([#3546](https://github.com/ngrx/platform/issues/3546)) ([a28175c](https://github.com/ngrx/platform/commit/a28175c)), closes [#3511](https://github.com/ngrx/platform/issues/3511)
+
+<a name="14.3.0"></a>
+
+# [14.3.0](https://github.com/ngrx/platform/compare/14.2.0...14.3.0) (2022-08-25)
+
+### Features
+
+- **effects:** add provideEffects function ([#3524](https://github.com/ngrx/platform/issues/3524)) ([db35bfe](https://github.com/ngrx/platform/commit/db35bfe)), closes [#3522](https://github.com/ngrx/platform/issues/3522)
+- **router-store:** add provideRouterStore function ([#3532](https://github.com/ngrx/platform/issues/3532)) ([511b7cf](https://github.com/ngrx/platform/commit/511b7cf)), closes [#3528](https://github.com/ngrx/platform/issues/3528)
+- **store:** add provideStore and provideState functions for standalone APIs ([#3539](https://github.com/ngrx/platform/issues/3539)) ([5639c1e](https://github.com/ngrx/platform/commit/5639c1e)), closes [#3526](https://github.com/ngrx/platform/issues/3526)
+- **store-devtools:** add provideStoreDevtools function ([#3537](https://github.com/ngrx/platform/issues/3537)) ([6b0db4e](https://github.com/ngrx/platform/commit/6b0db4e)), closes [#3527](https://github.com/ngrx/platform/issues/3527)
+
+<a name="14.2.0"></a>
+
+# [14.2.0](https://github.com/ngrx/platform/compare/14.1.0...14.2.0) (2022-08-18)
+
+### Bug Fixes
+
+- **component-store:** make synchronous updater errors catchable ([#3490](https://github.com/ngrx/platform/issues/3490)) ([1a906fd](https://github.com/ngrx/platform/commit/1a906fd))
+- **component-store:** move isInitialized check to queueScheduler context on state update ([#3492](https://github.com/ngrx/platform/issues/3492)) ([53636e4](https://github.com/ngrx/platform/commit/53636e4)), closes [#2991](https://github.com/ngrx/platform/issues/2991)
+
+### Features
+
+- **component-store:** handle errors in next callback ([#3533](https://github.com/ngrx/platform/issues/3533)) ([551c8eb](https://github.com/ngrx/platform/commit/551c8eb))
+
+<a name="14.1.0"></a>
+
+# [14.1.0](https://github.com/ngrx/platform/compare/14.0.2...14.1.0) (2022-08-09)
+
+### Bug Fixes
+
+- **eslint-plugin:** allow sequential dispatches in a different block context ([#3515](https://github.com/ngrx/platform/issues/3515)) ([faf446f](https://github.com/ngrx/platform/commit/faf446f)), closes [#3513](https://github.com/ngrx/platform/issues/3513)
+- **eslint-plugin:** Remove the md suffix from the docsUrl path ([#3518](https://github.com/ngrx/platform/issues/3518)) ([71d4d4b](https://github.com/ngrx/platform/commit/71d4d4b))
+- **store:** improve error for forbidden characters in createActionGroup ([#3496](https://github.com/ngrx/platform/issues/3496)) ([398fbed](https://github.com/ngrx/platform/commit/398fbed))
+
+### Features
+
+- **component:** add RenderScheduler to the public API ([#3516](https://github.com/ngrx/platform/issues/3516)) ([4642919](https://github.com/ngrx/platform/commit/4642919))
+- **component:** replace markDirty with custom TickScheduler ([#3488](https://github.com/ngrx/platform/issues/3488)) ([3fcd8af](https://github.com/ngrx/platform/commit/3fcd8af))
+
+### Performance Improvements
+
+- **component:** do not schedule render for synchronous events ([#3487](https://github.com/ngrx/platform/issues/3487)) ([bb9071c](https://github.com/ngrx/platform/commit/bb9071c))
+
+<a name="14.0.2"></a>
+
+## [14.0.2](https://github.com/ngrx/platform/compare/14.0.1...14.0.2) (2022-07-12)
+
+### Bug Fixes
+
+- **component:** import operators from rxjs/operators ([#3479](https://github.com/ngrx/platform/issues/3479)) ([20ef7a4](https://github.com/ngrx/platform/commit/20ef7a4))
+- **component-store:** effect handles generics that extend upon a type ([#3485](https://github.com/ngrx/platform/issues/3485)) ([9d2bda7](https://github.com/ngrx/platform/commit/9d2bda7)), closes [#3482](https://github.com/ngrx/platform/issues/3482)
+- **data:** add TSDoc annotations ([#3483](https://github.com/ngrx/platform/issues/3483)) ([cbbc49f](https://github.com/ngrx/platform/commit/cbbc49f))
+- **eslint-plugin:** fix configuration guide link ([#3480](https://github.com/ngrx/platform/issues/3480)) ([8219b1d](https://github.com/ngrx/platform/commit/8219b1d))
+
+<a name="14.0.1"></a>
+
+## [14.0.1](https://github.com/ngrx/platform/compare/14.0.0...14.0.1) (2022-06-29)
+
+### Bug Fixes
+
+- **component-store:** allow void callbacks in effect ([#3466](https://github.com/ngrx/platform/issues/3466)) ([e6dedd6](https://github.com/ngrx/platform/commit/e6dedd6)), closes [#3462](https://github.com/ngrx/platform/issues/3462)
+- **component-store:** import operators from rxjs/operators ([#3465](https://github.com/ngrx/platform/issues/3465)) ([f9ba513](https://github.com/ngrx/platform/commit/f9ba513))
+- **schematics:** add workingDirectory to schemas ([#3473](https://github.com/ngrx/platform/issues/3473)) ([50ea6b3](https://github.com/ngrx/platform/commit/50ea6b3)), closes [#3469](https://github.com/ngrx/platform/issues/3469)
+- **schematics:** create schematicCollections if not exists ([#3470](https://github.com/ngrx/platform/issues/3470)) ([011cbcc](https://github.com/ngrx/platform/commit/011cbcc))
+
+<a name="14.0.0"></a>
+
+# [14.0.0](https://github.com/ngrx/platform/compare/14.0.0-rc.0...14.0.0) (2022-06-20)
+
+### Bug Fixes
+
+- **component:** do not exclude falsy types from LetDirective's input type ([#3460](https://github.com/ngrx/platform/issues/3460)) ([7028adb](https://github.com/ngrx/platform/commit/7028adb))
+
+<a name="14.0.0-rc.0"></a>
+
+# [14.0.0-rc.0](https://github.com/ngrx/platform/compare/14.0.0-beta.0...14.0.0-rc.0) (2022-06-08)
+
+### Code Refactoring
+
+- **router-store:** change name for full router state serializer ([#3430](https://github.com/ngrx/platform/issues/3430)) ([d443f50](https://github.com/ngrx/platform/commit/d443f50)), closes [#3416](https://github.com/ngrx/platform/issues/3416)
+
+### Features
+
+- **component:** add separate modules for PushPipe and LetDirective ([#3449](https://github.com/ngrx/platform/issues/3449)) ([eacc4b4](https://github.com/ngrx/platform/commit/eacc4b4)), closes [#3341](https://github.com/ngrx/platform/issues/3341)
+- **component:** deprecate ReactiveComponentModule ([#3451](https://github.com/ngrx/platform/issues/3451)) ([b4dd2c8](https://github.com/ngrx/platform/commit/b4dd2c8))
+- **eslint-plugin:** improve install flow ([#3447](https://github.com/ngrx/platform/issues/3447)) ([8ddaf60](https://github.com/ngrx/platform/commit/8ddaf60))
+- **schematics:** use schematicCollections instead of defaultCollection ([#3441](https://github.com/ngrx/platform/issues/3441)) ([5abf828](https://github.com/ngrx/platform/commit/5abf828)), closes [#3383](https://github.com/ngrx/platform/issues/3383)
+
+### BREAKING CHANGES
+
+- **router-store:** The full router state serializer has been renamed.
+
+BEFORE:
+
+The full router state serializer is named `DefaultRouterStateSerializer`
+
+AFTER:
+
+The full router state serializer is named `FullRouterStateSerializer`. A migration is provided to rename the export in affected projects.
+
+<a name="14.0.0-beta.0"></a>
+
+# [14.0.0-beta.0](https://github.com/ngrx/platform/compare/13.1.0...14.0.0-beta.0) (2022-05-30)
+
+- Closes #3344, #3345 ([70056a8](https://github.com/ngrx/platform/commit/70056a8)), closes [#3344](https://github.com/ngrx/platform/issues/3344) [#3345](https://github.com/ngrx/platform/issues/3345)
+
+### Bug Fixes
+
+- **store:** rename template literal to string literal for createActionGroup ([#3426](https://github.com/ngrx/platform/issues/3426)) ([7d08db1](https://github.com/ngrx/platform/commit/7d08db1))
+
+### Features
+
+- **schematics:** remove creators option ([#3311](https://github.com/ngrx/platform/issues/3311)) ([e86278a](https://github.com/ngrx/platform/commit/e86278a))
+- update Angular packages to latest v14 RC ([#3425](https://github.com/ngrx/platform/issues/3425)) ([f15dd1e](https://github.com/ngrx/platform/commit/f15dd1e)), closes [#3417](https://github.com/ngrx/platform/issues/3417)
+- **component:** add error as value to LetDirective's context ([#3380](https://github.com/ngrx/platform/issues/3380)) ([6452e24](https://github.com/ngrx/platform/commit/6452e24)), closes [#3343](https://github.com/ngrx/platform/issues/3343)
+- **component:** add suspense template input to LetDirective ([#3377](https://github.com/ngrx/platform/issues/3377)) ([345ee53](https://github.com/ngrx/platform/commit/345ee53)), closes [#3340](https://github.com/ngrx/platform/issues/3340)
+- **component:** use global render strategy in zone-less mode ([#3379](https://github.com/ngrx/platform/issues/3379)) ([f233dae](https://github.com/ngrx/platform/commit/f233dae)), closes [#3342](https://github.com/ngrx/platform/issues/3342)
+- **component-store:** add OnStoreInit and OnStateInit lifecycle hooks ([#3368](https://github.com/ngrx/platform/issues/3368)) ([0ffed02](https://github.com/ngrx/platform/commit/0ffed02)), closes [#3335](https://github.com/ngrx/platform/issues/3335)
+- **eslint-plugin:** add NgRx ESLint Plugin ([#3373](https://github.com/ngrx/platform/issues/3373)) ([ae0041b](https://github.com/ngrx/platform/commit/ae0041b))
+- **store:** add createActionGroup function ([#3381](https://github.com/ngrx/platform/issues/3381)) ([2cdecb3](https://github.com/ngrx/platform/commit/2cdecb3)), closes [#3337](https://github.com/ngrx/platform/issues/3337)
+- **store:** install and configure the [@ngrx](https://github.com/ngrx)/eslint-plugin on ng-add ([#3386](https://github.com/ngrx/platform/issues/3386)) ([bf2672e](https://github.com/ngrx/platform/commit/bf2672e))
+
+### Performance Improvements
+
+- **component:** reset state / trigger CD only if necessary ([#3328](https://github.com/ngrx/platform/issues/3328)) ([f5b055b](https://github.com/ngrx/platform/commit/f5b055b))
+
+### BREAKING CHANGES
+
+- 1. The context of `LetDirective` is strongly typed when `null` or
+     `undefined` is passed as input.
+
+BEFORE:
+
+```html
+<p *ngrxLet="null as n">{{ n }}</p>
+<p *ngrxLet="undefined as u">{{ u }}</p>
+```
+
+- The type of `n` is `any`.
+- The type of `u` is `any`.
+
+AFTER:
+
+```html
+<p *ngrxLet="null as n">{{ n }}</p>
+<p *ngrxLet="undefined as u">{{ u }}</p>
+```
+
+- The type of `n` is `null`.
+- The type of `u` is `undefined`.
+
+* **schematics:** BEFORE:
+
+Creating actions, reducers, and effects is possible without using the creator syntax is possible.
+
+AFTER:
+
+- All schematics use the non-creator syntax to scaffold the code.
+- The option `--creators` (and `-c`) is removed from the schematic options.
+- The `skipTests` option is removed while generating actions.
+
+* Minimum version of Angular has been updated
+
+BEFORE:
+
+Minimum version of Angular was 13.x
+
+AFTER:
+
+Minimum version of Angular is 14.x
+
+- **component:** The native local rendering strategy is replaced by global
+  in zone-less mode for better performance.
+
+BEFORE:
+
+The change detection is triggered via `changeDetectorRef.detectChanges`
+in zone-less mode.
+
+AFTER:
+
+The change detection is triggered via `ɵmarkDirty` in zone-less mode.
+
+- **component:** The `$error` property from `LetDirective`'s view context is
+  a thrown error or `undefined` instead of `true`/`false`.
+
+BEFORE:
+
+```ts
+<p *ngrxLet="obs$; $error as e">{{ e }}</p>
+```
+
+- `e` will be `true` when `obs$` emits error event.
+- `e` will be `false` when `obs$` emits next/complete event.
+
+AFTER:
+
+```ts
+<p *ngrxLet="obs$; $error as e">{{ e }}</p>
+```
+
+- `e` will be thrown error when `obs$` emits error event.
+- `e` will be `undefined` when `obs$` emits next/complete event.
+
+<a name="13.1.0"></a>
+
+# [13.1.0](https://github.com/ngrx/platform/compare/13.0.2...13.1.0) (2022-03-28)
+
+### Bug Fixes
+
+- **component-store:** memoization not working when passing selectors directly to select ([#3356](https://github.com/ngrx/platform/issues/3356)) ([38bce88](https://github.com/ngrx/platform/commit/38bce88))
+- **entity:** add default options to entity adapter when undefined is passed ([#3287](https://github.com/ngrx/platform/issues/3287)) ([17fe494](https://github.com/ngrx/platform/commit/17fe494))
+- **store:** add explicit overloads for createSelector ([#3354](https://github.com/ngrx/platform/issues/3354)) ([2f82101](https://github.com/ngrx/platform/commit/2f82101)), closes [#3268](https://github.com/ngrx/platform/issues/3268)
+
+### Features
+
+- **data:** add ability to configure trailing slashes ([#3357](https://github.com/ngrx/platform/issues/3357)) ([56aedfd](https://github.com/ngrx/platform/commit/56aedfd))
+- **store-devtools:** add REDUX_DEVTOOLS_EXTENSION injection token to public API ([#3338](https://github.com/ngrx/platform/issues/3338)) ([b55b0e4](https://github.com/ngrx/platform/commit/b55b0e4))
+
 <a name="13.0.2"></a>
 
 ## [13.0.2](https://github.com/ngrx/platform/compare/13.0.1...13.0.2) (2021-12-07)

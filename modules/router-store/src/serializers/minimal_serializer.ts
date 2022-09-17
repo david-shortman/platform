@@ -1,4 +1,4 @@
-import { RouterStateSnapshot, ActivatedRouteSnapshot } from '@angular/router';
+import { ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { BaseRouterStoreState, RouterStateSerializer } from './base';
 
 export interface MinimalActivatedRouteSnapshot {
@@ -19,7 +19,8 @@ export interface MinimalRouterStateSnapshot extends BaseRouterStoreState {
 }
 
 export class MinimalRouterStateSerializer
-  implements RouterStateSerializer<MinimalRouterStateSnapshot> {
+  implements RouterStateSerializer<MinimalRouterStateSnapshot>
+{
   serialize(routerState: RouterStateSnapshot): MinimalRouterStateSnapshot {
     return {
       root: this.serializeRoute(routerState.root),
@@ -42,6 +43,7 @@ export class MinimalRouterStateSerializer
             pathMatch: route.routeConfig.pathMatch,
             redirectTo: route.routeConfig.redirectTo,
             outlet: route.routeConfig.outlet,
+            title: route.routeConfig.title,
           }
         : null,
       queryParams: route.queryParams,

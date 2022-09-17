@@ -13,8 +13,10 @@ export {
   SelectorWithProps,
   RuntimeChecks,
   FunctionWithParametersType,
+  EnvironmentProviders,
 } from './models';
 export { createAction, props, union } from './action_creator';
+export { createActionGroup, emptyProps } from './action_group_creator';
 export { Store, select } from './store';
 export { combineReducers, compose, createReducerFactory } from './utils';
 export { ActionsSubject, INIT } from './actions_subject';
@@ -51,13 +53,14 @@ export {
   USER_PROVIDED_META_REDUCERS,
   USER_RUNTIME_CHECKS,
   ACTIVE_RUNTIME_CHECKS,
+  FEATURE_STATE_PROVIDER,
+  ROOT_STORE_PROVIDER,
 } from './tokens';
 export {
   StoreModule,
   StoreRootModule,
   StoreFeatureModule,
-  RootStoreConfig,
-  StoreConfig,
-  FeatureSlice,
 } from './store_module';
+export { RootStoreConfig, StoreConfig, FeatureSlice } from './store_config';
+export { provideStore, provideState } from './provide_store';
 export { ReducerTypes, on, createReducer } from './reducer_creator';

@@ -8,10 +8,9 @@
     "downlevelIteration": true,
     "emitDecoratorMetadata": true,
     "noImplicitOverride": true,
-    "noStrictGenericChecks": true,
     "lib": ["es2016", "dom"],
     "outDir": "../out-tsc/app",
-    "target": "es5",
+    "target": "es2020",
     "module": "commonjs",
     "baseUrl": ".",
     "rootDir": ".",
@@ -53,7 +52,6 @@
     "typeRoots": ["node_modules/@types"]
   },
   "exclude": [
-    "bazel-out",
     "dist",
     "node_modules",
     "**/*/node_modules",

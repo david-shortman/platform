@@ -5,16 +5,15 @@ import {
 } from '@ngrx/store';
 import { RouterStateSelectors } from './models';
 import { RouterReducerState } from './reducer';
-import { DEFAULT_ROUTER_FEATURENAME } from './router_store_module';
+import { DEFAULT_ROUTER_FEATURENAME } from './router_store_config';
 
-export function createRouterSelector<State extends Record<string, any>>(): MemoizedSelector<
-  State,
-  RouterReducerState
-> {
+export function createRouterSelector<
+  State extends Record<string, any>
+>(): MemoizedSelector<State, RouterReducerState> {
   return createFeatureSelector(DEFAULT_ROUTER_FEATURENAME);
 }
 
-export function getSelectors<V>(
+export function getSelectors<V extends Record<string, any>>(
   selectState: (state: V) => RouterReducerState<any> = createRouterSelector<V>()
 ): RouterStateSelectors<V> {
   const selectRouterState = createSelector(
@@ -59,6 +58,10 @@ export function getSelectors<V>(
     selectRouterState,
     (routerState) => routerState && routerState.url
   );
+  const selectTitle = createSelector(
+    selectCurrentRoute,
+    (route) => route && route.routeConfig?.title
+  );
 
   return {
     selectCurrentRoute,
@@ -69,5 +72,6 @@ export function getSelectors<V>(
     selectRouteParam,
     selectRouteData,
     selectUrl,
+    selectTitle,
   };
 }

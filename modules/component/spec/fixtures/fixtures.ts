@@ -1,43 +1,24 @@
-import createSpy = jasmine.createSpy;
-import { ChangeDetectorRef, NgZone } from '@angular/core';
+import { NgZone } from '@angular/core';
 import { MockNoopNgZone } from './mock-noop-ng-zone';
 
-/**
- * this is not exposed as NgZone should never be exposed to get miss matched with the real one
- */
-class NoopNgZone extends MockNoopNgZone {}
-
-export const manualInstanceNgZone = new NgZone({
+export const ngZoneMock = new NgZone({
   enableLongStackTrace: false,
   shouldCoalesceEventChangeDetection: false,
 });
-export const manualInstanceNoopNgZone = new NoopNgZone({
+export const noopNgZoneMock = new MockNoopNgZone({
   enableLongStackTrace: false,
   shouldCoalesceEventChangeDetection: false,
 });
 
 export class MockChangeDetectorRef {
-  markForCheck = createSpy('markForCheck');
-  detectChanges = createSpy('detectChanges');
-  checkNoChanges = createSpy('checkNoChanges');
-  detach = createSpy('detach');
-  reattach = createSpy('reattach');
+  markForCheck = jest.fn();
+  detectChanges = jest.fn();
+  checkNoChanges = jest.fn();
+  detach = jest.fn();
+  reattach = jest.fn();
+  context = { x: 1, y: 2 };
 }
 
-export const mockPromise = {
-  then: () => {},
-};
-
-export function getMockOptimizedStrategyConfig() {
-  return {
-    component: {},
-    cdRef: (new MockChangeDetectorRef() as any) as ChangeDetectorRef,
-  };
-}
-
-export function getMockNoopStrategyConfig() {
-  return {
-    component: {},
-    cdRef: (new MockChangeDetectorRef() as any) as ChangeDetectorRef,
-  };
+export class MockErrorHandler {
+  handleError = jest.fn();
 }

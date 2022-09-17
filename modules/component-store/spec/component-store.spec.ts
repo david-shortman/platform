@@ -1,5 +1,10 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { ComponentStore } from '@ngrx/component-store';
+import {
+  ComponentStore,
+  OnStateInit,
+  OnStoreInit,
+  provideComponentStore,
+} from '@ngrx/component-store';
 import { fakeSchedulers, marbles } from 'rxjs-marbles/jest';
 import {
   of,
@@ -12,6 +17,7 @@ import {
   scheduled,
   queueScheduler,
   asyncScheduler,
+  throwError,
 } from 'rxjs';
 import {
   delayWhen,
@@ -23,6 +29,15 @@ import {
   delay,
   concatMap,
 } from 'rxjs/operators';
+import { createSelector } from '@ngrx/store';
+import {
+  Inject,
+  Injectable,
+  InjectionToken,
+  Injector,
+  Provider,
+} from '@angular/core';
+import { fakeAsync, tick } from '@angular/core/testing';
 
 describe('Component Store', () => {
   describe('initialization', () => {
@@ -65,19 +80,8 @@ describe('Component Store', () => {
     it(
       'throws an Error when setState with a function/callback is called' +
         ' before initialization',
-      marbles((m) => {
+      () => {
         const componentStore = new ComponentStore();
-
-        m.expect(componentStore.state$).toBeObservable(
-          m.hot(
-            '#',
-            {},
-            new Error(
-              'ComponentStore has not been initialized yet. ' +
-                'Please make sure it is initialized before updating/getting.'
-            )
-          )
-        );
 
         expect(() => {
           componentStore.setState(() => ({ setState: 'new state' }));
@@ -87,7 +91,7 @@ describe('Component Store', () => {
               'Please make sure it is initialized before updating/getting.'
           )
         );
-      })
+      }
     );
 
     it('throws an Error when patchState with an object is called before initialization', () => {
@@ -133,54 +137,29 @@ describe('Component Store', () => {
       }
     );
 
-    it(
-      'throws an Error when updater is called before initialization',
-      marbles((m) => {
-        const componentStore = new ComponentStore();
+    it('throws an Error synchronously when updater is called before initialization', () => {
+      const componentStore = new ComponentStore();
 
-        m.expect(componentStore.state$).toBeObservable(
-          m.hot(
-            '#',
-            {},
-            new Error(
-              'ComponentStore has not been initialized yet. ' +
-                'Please make sure it is initialized before updating/getting.'
-            )
-          )
-        );
-
-        expect(() => {
-          componentStore.updater((state, value: object) => value)({
-            updater: 'new state',
-          });
-        }).toThrow(
-          new Error(
-            'ComponentStore has not been initialized yet. ' +
-              'Please make sure it is initialized before updating/getting.'
-          )
-        );
-      })
-    );
+      expect(() => {
+        componentStore.updater((state, value: object) => value)({
+          updater: 'new state',
+        });
+      }).toThrow(
+        new Error(
+          'ComponentStore has not been initialized yet. ' +
+            'Please make sure it is initialized before updating/getting.'
+        )
+      );
+    });
 
     it(
       'throws an Error when updater is called with sync Observable' +
         ' before initialization',
-      marbles((m) => {
+      () => {
         const componentStore = new ComponentStore();
         const syncronousObservable$ = of({
           updater: 'new state',
         });
-
-        m.expect(componentStore.state$).toBeObservable(
-          m.hot(
-            '#',
-            {},
-            new Error(
-              'ComponentStore has not been initialized yet. ' +
-                'Please make sure it is initialized before updating/getting.'
-            )
-          )
-        );
 
         expect(() => {
           componentStore.updater<object>((state, value) => value)(
@@ -192,46 +171,39 @@ describe('Component Store', () => {
               'Please make sure it is initialized before updating/getting.'
           )
         );
-      })
+      }
     );
 
     it(
-      'does not throw an Error when updater is called with async Observable' +
-        ' before initialization, however closes the subscription and does not' +
-        ' update the state and sends error in state$',
+      'throws an Error asynchronously when updater is called with async' +
+        ' Observable before initialization, however closes the subscription' +
+        ' and does not update the state',
       marbles((m) => {
         const componentStore = new ComponentStore();
-        const asyncronousObservable$ = m.cold('-u', {
+        const asynchronousObservable$ = m.cold('-u', {
           u: { updater: 'new state' },
         });
 
         let subscription: Subscription | undefined;
 
-        m.expect(componentStore.state$).toBeObservable(
-          m.hot(
-            '-#',
-            {},
-            new Error(
-              'ComponentStore has not been initialized yet. ' +
-                'Please make sure it is initialized before updating/getting.'
-            )
-          )
-        );
-
         expect(() => {
           subscription = componentStore.updater(
             (state, value: object) => value
-          )(asyncronousObservable$);
-        }).not.toThrow();
-
-        m.flush();
+          )(asynchronousObservable$);
+          m.flush();
+        }).toThrow(
+          new Error(
+            'ComponentStore has not been initialized yet. ' +
+              'Please make sure it is initialized before updating/getting.'
+          )
+        );
 
         expect(subscription!.closed).toBe(true);
       })
     );
 
     it(
-      'does not throws an Error when updater is called with async Observable' +
+      'does not throw an Error when updater is called with async Observable' +
         ' before initialization, that emits the value after initialization',
       marbles((m) => {
         const componentStore = new ComponentStore();
@@ -263,6 +235,19 @@ describe('Component Store', () => {
           m.hot('(iu)', { i: INIT_STATE, u: UPDATED_STATE })
         );
       })
+    );
+
+    it(
+      'does not throw an Error when ComponentStore initialization and' +
+        ' state update are scheduled via queueScheduler',
+      () => {
+        expect(() => {
+          queueScheduler.schedule(() => {
+            const componentStore = new ComponentStore({ foo: false });
+            componentStore.patchState({ foo: true });
+          });
+        }).not.toThrow();
+      }
     );
   });
 
@@ -624,6 +609,100 @@ describe('Component Store', () => {
     );
   });
 
+  describe('throws an error', () => {
+    it('synchronously when synchronous error is thrown within updater', () => {
+      const componentStore = new ComponentStore({});
+      const error = new Error('ERROR!');
+      const updater = componentStore.updater(() => {
+        throw error;
+      });
+
+      expect(() => updater()).toThrow(error);
+    });
+
+    it('synchronously when synchronous error is thrown within setState callback', () => {
+      const componentStore = new ComponentStore({});
+      const error = new Error('ERROR!');
+
+      expect(() => {
+        componentStore.setState(() => {
+          throw error;
+        });
+      }).toThrow(error);
+    });
+
+    it('synchronously when synchronous error is thrown within patchState callback', () => {
+      const componentStore = new ComponentStore({});
+      const error = new Error('ERROR!');
+
+      expect(() => {
+        componentStore.patchState(() => {
+          throw error;
+        });
+      }).toThrow(error);
+    });
+
+    it('synchronously when synchronous observable throws an error with updater', () => {
+      const componentStore = new ComponentStore({});
+      const error = new Error('ERROR!');
+      const updater = componentStore.updater<unknown>(() => ({}));
+
+      expect(() => {
+        updater(throwError(() => error));
+      }).toThrow(error);
+    });
+
+    it('synchronously when synchronous observable throws an error with patchState', () => {
+      const componentStore = new ComponentStore({});
+      const error = new Error('ERROR!');
+
+      expect(() => {
+        componentStore.patchState(throwError(() => error));
+      }).toThrow(error);
+    });
+
+    it(
+      'asynchronously when asynchronous observable throws an error with updater',
+      marbles((m) => {
+        const componentStore = new ComponentStore({});
+        const error = new Error('ERROR!');
+        const updater = componentStore.updater<unknown>(() => ({}));
+        const asyncObs$ = m.cold('-#', {}, error);
+
+        expect(() => {
+          try {
+            updater(asyncObs$);
+          } catch {
+            throw new Error('updater should not throw an error synchronously');
+          }
+
+          m.flush();
+        }).toThrow(error);
+      })
+    );
+
+    it(
+      'asynchronously when asynchronous observable throws an error with patchState',
+      marbles((m) => {
+        const componentStore = new ComponentStore({});
+        const error = new Error('ERROR!');
+        const asyncObs$ = m.cold('-#', {}, error);
+
+        expect(() => {
+          try {
+            componentStore.patchState(asyncObs$);
+          } catch {
+            throw new Error(
+              'patchState should not throw an error synchronously'
+            );
+          }
+
+          m.flush();
+        }).toThrow(error);
+      })
+    );
+  });
+
   describe('selector', () => {
     interface State {
       value: string;
@@ -894,6 +973,23 @@ describe('Component Store', () => {
       });
 
       componentStore.ngOnDestroy();
+    });
+
+    it('supports memoization with createSelector', () => {
+      const projectorCallback = jest.fn((str: string) => str);
+      const memoizedSelector = createSelector(
+        (s: State) => s.value,
+        projectorCallback
+      );
+      const selector = componentStore.select(memoizedSelector);
+
+      // first call to memoizedSelector
+      const subscription = selector.subscribe();
+      // second call to memoizedSelector with the same value
+      componentStore.setState(INIT_STATE);
+
+      subscription.unsubscribe();
+      expect(projectorCallback).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -1428,5 +1524,152 @@ describe('Component Store', () => {
 
       expect(componentStore.get()).toEqual({ value: 'updated' });
     });
+  });
+
+  describe('lifecycle hooks', () => {
+    interface LifeCycle {
+      init: boolean;
+    }
+
+    const onStoreInitMessage = 'on store init called';
+    const onStateInitMessage = 'on state init called';
+
+    const INIT_STATE = new InjectionToken('Init State');
+
+    @Injectable()
+    class LifecycleStore
+      extends ComponentStore<LifeCycle>
+      implements OnStoreInit, OnStateInit
+    {
+      logs: string[] = [];
+      constructor(@Inject(INIT_STATE) state?: LifeCycle) {
+        super(state);
+      }
+
+      logEffect = this.effect(
+        tap<void>(() => {
+          this.logs.push('effect');
+        })
+      );
+
+      ngrxOnStoreInit() {
+        this.logs.push(onStoreInitMessage);
+      }
+
+      ngrxOnStateInit() {
+        this.logs.push(onStateInitMessage);
+      }
+    }
+
+    @Injectable()
+    class ExtraStore extends LifecycleStore {
+      constructor() {
+        super();
+      }
+    }
+
+    @Injectable()
+    class NonProviderStore extends ComponentStore<{}> implements OnStoreInit {
+      ngrxOnStoreInit() {}
+    }
+
+    function setup({
+      initialState,
+      providers = [],
+    }: { initialState?: LifeCycle; providers?: Provider[] } = {}) {
+      const injector = Injector.create({
+        providers: [
+          { provide: INIT_STATE, useValue: initialState },
+          provideComponentStore(LifecycleStore),
+          providers,
+        ],
+      });
+
+      return {
+        store: injector.get(LifecycleStore),
+        injector,
+      };
+    }
+
+    it('should call the OnInitStore lifecycle hook if defined', () => {
+      const state = setup({ initialState: { init: true } });
+
+      expect(state.store.logs[0]).toBe(onStoreInitMessage);
+    });
+
+    it('should only call the OnInitStore lifecycle hook once', () => {
+      const state = setup({ initialState: { init: true } });
+      expect(state.store.logs[0]).toBe(onStoreInitMessage);
+
+      state.store.logs = [];
+      state.store.setState({ init: false });
+
+      expect(state.store.logs.length).toBe(0);
+    });
+
+    it('should call the OnInitState lifecycle hook if defined and state is set eagerly', () => {
+      const state = setup({ initialState: { init: true } });
+
+      expect(state.store.logs[1]).toBe(onStateInitMessage);
+    });
+
+    it('should call the OnInitState lifecycle hook if defined and after state is set lazily', () => {
+      const state = setup();
+      expect(state.store.logs.length).toBe(1);
+
+      state.store.setState({ init: true });
+
+      expect(state.store.logs[1]).toBe(onStateInitMessage);
+    });
+
+    it('should only call the OnInitStore lifecycle hook once', () => {
+      const state = setup({ initialState: { init: true } });
+
+      expect(state.store.logs[1]).toBe(onStateInitMessage);
+      state.store.logs = [];
+      state.store.setState({ init: false });
+
+      expect(state.store.logs.length).toBe(0);
+    });
+
+    it('works with multiple stores where one extends the other', () => {
+      const state = setup({
+        providers: [provideComponentStore(ExtraStore)],
+      });
+
+      const lifecycleStore = state.store;
+      const extraStore = state.injector.get(ExtraStore);
+
+      expect(lifecycleStore).toBeDefined();
+      expect(extraStore).toBeDefined();
+    });
+
+    it('should not log a warning when a ComponentStore with hooks is provided using provideComponentStore()', fakeAsync(() => {
+      jest.spyOn(console, 'warn');
+
+      const state = setup();
+
+      const store = state.injector.get(LifecycleStore);
+
+      tick(0);
+      expect(store.ngrxOnStoreInit).toBeDefined();
+      expect(store['ɵhasProvider']).toBeTruthy();
+      expect(console.warn).not.toHaveBeenCalled();
+    }));
+
+    it('should log a warning when a hook is implemented without using provideComponentStore()', fakeAsync(() => {
+      jest.spyOn(console, 'warn');
+
+      const state = setup({
+        providers: [NonProviderStore],
+      });
+
+      const store = state.injector.get(NonProviderStore);
+
+      tick(0);
+      expect(store.ngrxOnStoreInit).toBeDefined();
+      expect(store['ɵhasProvider']).toBeFalsy();
+      expect(console.warn).toHaveBeenCalled();
+    }));
   });
 });

@@ -1,6 +1,6 @@
 {
   "name": "@ngrx/store-devtools",
-  "version": "13.0.2",
+  "version": "14.3.1",
   "description": "Developer tools for @ngrx/store",
   "repository": {
     "type": "git",
@@ -20,8 +20,8 @@
   },
   "homepage": "https://github.com/ngrx/platform#readme",
   "peerDependencies": {
-    "@ngrx/store": "13.0.2",
-    "rxjs": "^6.5.3 || ^7.4.0"
+    "@ngrx/store": "14.3.1",
+    "rxjs": "^6.5.3 || ^7.5.0"
   },
   "schematics": "./schematics/collection.json",
   "ng-update": {
@@ -34,7 +34,8 @@
       "@ngrx/schematics",
       "@ngrx/store-devtools",
       "@ngrx/component-store",
-      "@ngrx/component"
+      "@ngrx/component",
+      "@ngrx/eslint-plugin"
     ],
     "migrations": "./migrations/migration.json"
   },

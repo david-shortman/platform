@@ -2,6 +2,7 @@
   "version": 1,
   "projects": {
     "component": {
+      "$schema": "../../node_modules/nx/schemas/project-schema.json",
       "projectType": "library",
       "root": "modules/component",
       "sourceRoot": "modules/component/src",
@@ -42,7 +43,7 @@
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
-            "jestConfig": "modules/component/jest.config.js",
+            "jestConfig": "modules/component/jest.config.ts",
             "runInBand": true
           },
           "outputs": ["coverage/modules/component"]
@@ -52,6 +53,7 @@
       "tags": []
     },
     "component-store": {
+      "$schema": "../../node_modules/nx/schemas/project-schema.json",
       "projectType": "library",
       "root": "modules/component-store",
       "sourceRoot": "modules/component-store/src",
@@ -92,7 +94,7 @@
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
-            "jestConfig": "modules/component-store/jest.config.js",
+            "jestConfig": "modules/component-store/jest.config.ts",
             "runInBand": true
           },
           "outputs": ["coverage/modules/component-store"]
@@ -102,6 +104,7 @@
       "tags": []
     },
     "data": {
+      "$schema": "../../node_modules/nx/schemas/project-schema.json",
       "projectType": "library",
       "root": "modules/data",
       "sourceRoot": "modules/data/src",
@@ -142,7 +145,7 @@
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
-            "jestConfig": "modules/data/jest.config.js",
+            "jestConfig": "modules/data/jest.config.ts",
             "runInBand": true
           },
           "outputs": ["coverage/modules/data"]
@@ -152,6 +155,7 @@
       "tags": []
     },
     "data-example-app": {
+      "$schema": "../../node_modules/nx/schemas/project-schema.json",
       "projectType": "application",
       "schematics": {
         "@nrwl/angular:component": {
@@ -242,7 +246,7 @@
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
-            "jestConfig": "projects/data-example-app/jest.config.js",
+            "jestConfig": "projects/data-example-app/jest.config.ts",
             "runInBand": true,
             "passWithNoTests": true
           }
@@ -251,6 +255,7 @@
       "tags": []
     },
     "docs-app": {
+      "$schema": "../../node_modules/nx/schemas/project-schema.json",
       "root": "projects/ngrx.io",
       "sourceRoot": "projects/ngrx.io/src",
       "projectType": "application",
@@ -323,6 +328,7 @@
       ]
     },
     "effects": {
+      "$schema": "../../node_modules/nx/schemas/project-schema.json",
       "projectType": "library",
       "root": "modules/effects",
       "sourceRoot": "modules/effects/src",
@@ -372,7 +378,7 @@
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
-            "jestConfig": "modules/effects/jest.config.js",
+            "jestConfig": "modules/effects/jest.config.ts",
             "runInBand": true
           },
           "outputs": ["coverage/modules/effects"]
@@ -382,6 +388,7 @@
       "tags": []
     },
     "entity": {
+      "$schema": "../../node_modules/nx/schemas/project-schema.json",
       "projectType": "library",
       "root": "modules/entity",
       "sourceRoot": "modules/entity/src",
@@ -431,7 +438,7 @@
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
-            "jestConfig": "modules/entity/jest.config.js",
+            "jestConfig": "modules/entity/jest.config.ts",
             "runInBand": true
           },
           "outputs": ["coverage/modules/entity"]
@@ -440,7 +447,82 @@
       "schematics": {},
       "tags": []
     },
+    "eslint-plugin": {
+      "$schema": "../../node_modules/nx/schemas/project-schema.json",
+      "root": "modules/eslint-plugin",
+      "sourceRoot": "modules/eslint-plugin/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "modules/eslint-plugin/*/**/*.ts",
+              "modules/eslint-plugin/*/**/*.html"
+            ]
+          },
+          "outputs": ["{options.outputFile}"]
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "modules/eslint-plugin/jest.config.ts",
+            "runInBand": true
+          },
+          "outputs": ["coverage/modules/eslint-plugin"]
+        },
+        "build-package": {
+          "builder": "@nrwl/js:tsc",
+          "options": {
+            "outputPath": "dist/modules/eslint-plugin",
+            "tsConfig": "modules/eslint-plugin/tsconfig.build.json",
+            "packageJson": "modules/eslint-plugin/package.json",
+            "main": "modules/eslint-plugin/src/index.ts",
+            "sourceMap": false,
+            "assets": [
+              "collection.json",
+              {
+                "input": "./modules/eslint-plugin/src",
+                "glob": "**/*.!(ts)",
+                "output": "./src"
+              },
+              {
+                "input": "./modules/eslint-plugin",
+                "glob": "collection.json",
+                "output": "."
+              }
+            ],
+            "srcRootForCompilationRoot": "modules/eslint-plugin"
+          },
+          "outputs": ["{options.outputPath}"]
+        },
+        "build": {
+          "builder": "@nrwl/workspace:run-commands",
+          "options": {
+            "parallel": false,
+            "commands": [
+              {
+                "command": "nx build-package eslint-plugin"
+              },
+              {
+                "command": "cpy modules/eslint-plugin/migrations/migration.json dist/modules/eslint-plugin/migrations"
+              },
+              {
+                "command": "cpy modules/eslint-plugin/schematics/collection.json dist/modules/eslint-plugin/schematics"
+              },
+              {
+                "command": "cpy modules/eslint-plugin/schematics/ng-add/schema.json dist/modules/eslint-plugin/schematics/ng-add"
+              }
+            ],
+            "outputPath": ["dist/modules/eslint-plugin"]
+          }
+        }
+      },
+      "tags": []
+    },
     "example-app": {
+      "$schema": "../../node_modules/nx/schemas/project-schema.json",
       "root": "projects/example-app",
       "sourceRoot": "projects/example-app/src",
       "projectType": "application",
@@ -521,7 +603,7 @@
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
-            "jestConfig": "projects/example-app/jest.config.js",
+            "jestConfig": "projects/example-app/jest.config.ts",
             "runInBand": true
           },
           "outputs": ["coverage/projects/example-app"]
@@ -530,6 +612,7 @@
       "tags": []
     },
     "example-app-e2e": {
+      "$schema": "../../node_modules/nx/schemas/project-schema.json",
       "root": "projects/example-app-e2e",
       "sourceRoot": "projects/example-app-e2e/src",
       "projectType": "application",
@@ -562,6 +645,7 @@
       "implicitDependencies": ["example-app"]
     },
     "router-store": {
+      "$schema": "../../node_modules/nx/schemas/project-schema.json",
       "projectType": "library",
       "root": "modules/router-store",
       "sourceRoot": "modules/router-store/src",
@@ -602,7 +686,7 @@
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
-            "jestConfig": "modules/router-store/jest.config.js",
+            "jestConfig": "modules/router-store/jest.config.ts",
             "runInBand": true
           },
           "outputs": ["coverage/modules/router-store"]
@@ -612,6 +696,7 @@
       "tags": []
     },
     "schematics": {
+      "$schema": "../../node_modules/nx/schemas/project-schema.json",
       "root": "modules/schematics",
       "sourceRoot": "modules/schematics/src",
       "projectType": "library",
@@ -630,13 +715,13 @@
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
-            "jestConfig": "modules/schematics/jest.config.js",
+            "jestConfig": "modules/schematics/jest.config.ts",
             "runInBand": true
           },
           "outputs": ["coverage/modules/schematics"]
         },
         "build-package": {
-          "builder": "@nrwl/node:package",
+          "builder": "@nrwl/js:tsc",
           "options": {
             "outputPath": "dist/modules/schematics",
             "tsConfig": "modules/schematics/tsconfig.build.json",
@@ -681,12 +766,6 @@
                 "command": "cpy modules/schematics/src/**/files/**/*.* dist/ --parents"
               },
               {
-                "command": "cpy modules/schematics/src/**/creator-files/**/*.* dist/ --parents"
-              },
-              {
-                "command": "cpy modules/schematics/src/**/common-files/**/*.* dist/ --parents"
-              },
-              {
                 "command": "cpy modules/schematics/src/**/integration-files/**/*.* dist/ --parents"
               },
               {
@@ -700,9 +779,10 @@
       "tags": []
     },
     "schematics-core": {
+      "$schema": "../../node_modules/nx/schemas/project-schema.json",
       "projectType": "library",
       "root": "modules/schematics-core",
-      "sourceRoot": "modules/schematics-core/src",
+      "sourceRoot": "modules/schematics-core",
       "prefix": "ngrx",
       "architect": {
         "lint": {
@@ -718,7 +798,7 @@
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
-            "jestConfig": "modules/schematics-core/jest.config.js",
+            "jestConfig": "modules/schematics-core/jest.config.ts",
             "passWithNoTests": true
           },
           "outputs": ["coverage/modules/schematics-core"]
@@ -727,7 +807,131 @@
       "schematics": {},
       "tags": []
     },
+    "standalone-app": {
+      "$schema": "../../node_modules/nx/schemas/project-schema.json",
+      "projectType": "application",
+      "root": "projects/standalone-app",
+      "sourceRoot": "projects/standalone-app/src",
+      "prefix": "ngrx",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/projects/standalone-app",
+            "index": "projects/standalone-app/src/index.html",
+            "main": "projects/standalone-app/src/main.ts",
+            "polyfills": "projects/standalone-app/src/polyfills.ts",
+            "tsConfig": "projects/standalone-app/tsconfig.app.json",
+            "assets": [
+              "projects/standalone-app/src/favicon.ico",
+              "projects/standalone-app/src/assets"
+            ],
+            "styles": ["projects/standalone-app/src/styles.css"],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kb",
+                  "maximumError": "1mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "2kb",
+                  "maximumError": "4kb"
+                }
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "projects/standalone-app/src/environments/environment.ts",
+                  "with": "projects/standalone-app/src/environments/environment.prod.ts"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "configurations": {
+            "production": {
+              "browserTarget": "standalone-app:build:production"
+            },
+            "development": {
+              "browserTarget": "standalone-app:build:development"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "standalone-app:build"
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "projects/standalone-app/**/*.ts",
+              "projects/standalone-app/**/*.html"
+            ]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/projects/standalone-app"],
+          "options": {
+            "jestConfig": "projects/standalone-app/jest.config.ts",
+            "passWithNoTests": true
+          }
+        }
+      },
+      "tags": []
+    },
+    "standalone-app-e2e": {
+      "$schema": "../../node_modules/nx/schemas/project-schema.json",
+      "root": "projects/standalone-app-e2e",
+      "sourceRoot": "projects/standalone-app-e2e/src",
+      "projectType": "application",
+      "architect": {
+        "e2e": {
+          "builder": "@nrwl/cypress:cypress",
+          "options": {
+            "cypressConfig": "projects/standalone-app-e2e/cypress.json",
+            "devServerTarget": "standalone-app:serve:development"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "standalone-app:serve:production"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "outputs": ["{options.outputFile}"],
+          "options": {
+            "lintFilePatterns": ["projects/standalone-app-e2e/**/*.{js,ts}"]
+          }
+        }
+      },
+      "tags": [],
+      "implicitDependencies": ["standalone-app"]
+    },
     "store": {
+      "$schema": "../../node_modules/nx/schemas/project-schema.json",
       "projectType": "library",
       "root": "modules/store",
       "sourceRoot": "modules/store/src",
@@ -777,7 +981,7 @@
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
-            "jestConfig": "modules/store/jest.config.js",
+            "jestConfig": "modules/store/jest.config.ts",
             "runInBand": true
           },
           "outputs": ["coverage/modules/store"]
@@ -787,6 +991,7 @@
       "tags": []
     },
     "store-devtools": {
+      "$schema": "../../node_modules/nx/schemas/project-schema.json",
       "projectType": "library",
       "root": "modules/store-devtools",
       "sourceRoot": "modules/store-devtools/src",
@@ -827,7 +1032,7 @@
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
-            "jestConfig": "modules/store-devtools/jest.config.js",
+            "jestConfig": "modules/store-devtools/jest.config.ts",
             "runInBand": true
           },
           "outputs": ["coverage/modules/store-devtools"]

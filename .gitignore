@@ -61,8 +61,6 @@ __build__/**
 # Build Artifacts #
 release
 dist
-bazel-out
-bazel-bin
 /node_modules/
 lerna-debug.log
 /lib/
@@ -77,3 +75,5 @@ example-dist/
 *.tgz
 modules/*/schematics-core/testing
 !modules/schematics-core/testing
+
+.angular
