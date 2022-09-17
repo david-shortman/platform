@@ -13,17 +13,7 @@ describe('createSelector()', () => {
   );
 
   describe('projector', () => {
-    it('should require parameters when strictness enabled', () => {
-      expectSnippet(`
-        const selectTest = createSelector(
-            () => 'one',
-            () => 2,
-            (one, two) => 3
-        );
-        selectTest.projector<'strict'>();
-      `).toFail(/Expected 2 arguments, but got 0./);
-    });
-    it('should not require parameters when strictness not enabled', () => {
+    it('should require correct arguments by default', () => {
       expectSnippet(`
         const selectTest = createSelector(
             () => 'one',
@@ -31,9 +21,19 @@ describe('createSelector()', () => {
             (one, two) => 3
         );
         selectTest.projector();
+      `).toFail(/Expected 2 arguments, but got 0./);
+    });
+    it('should not require correct parameters when strictness bypassed with `any` generic argument', () => {
+      expectSnippet(`
+        const selectTest = createSelector(
+            () => 'one',
+            () => 2,
+            (one, two) => 3
+        );
+        selectTest.projector<any>();
       `).toSucceed();
     });
-    it('should succeed for existing explicitly typed selectors', () => {
+    it('should not require parameters for existing explicitly loosely typed selectors', () => {
       expectSnippet(`
         const selectTest: MemoizedSelector<
           unknown,

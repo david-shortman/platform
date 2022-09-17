@@ -120,7 +120,7 @@ describe('router selectors', () => {
       );
     `).toInfer(
       'selector',
-      'MemoizedSelector<State, string, DefaultProjectorFn<string>>'
+      'MemoizedSelector<State, string, (s1: string) => string>'
     );
   });
 });

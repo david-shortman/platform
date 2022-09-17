@@ -17,10 +17,10 @@ export type ComparatorFn = (a: any, b: any) => boolean;
 
 export type DefaultProjectorFn<T> = (...args: any[]) => T;
 
-type ProjectorStrictnessConfig = 'strict' | 'default';
+type ProjectorStrictness = 'strict';
 
-type OptionallyStrictProjectorArgs<
-  StrictnessConfig extends ProjectorStrictnessConfig,
+type SelectorProjectorArgs<
+  StrictnessConfig extends ProjectorStrictness,
   ProjectorArgs
 > = StrictnessConfig extends 'strict'
   ? ProjectorArgs extends unknown[]
@@ -28,11 +28,11 @@ type OptionallyStrictProjectorArgs<
     : any[]
   : any[];
 
-type OptionallyStrictProjectorFn<ProjectorFn> = ProjectorFn extends (
+type SelectorProjectorFn<ProjectorFn> = ProjectorFn extends (
   ...args: infer ProjectorArgs
 ) => infer ProjectorResult
-  ? <StrictnessConfig extends ProjectorStrictnessConfig = 'default'>(
-      ...args: OptionallyStrictProjectorArgs<StrictnessConfig, ProjectorArgs>
+  ? <Strictness extends ProjectorStrictness = 'strict'>(
+      ...args: SelectorProjectorArgs<Strictness, ProjectorArgs>
     ) => ProjectorResult
   : ProjectorFn;
 
@@ -42,7 +42,7 @@ export interface MemoizedSelector<
   ProjectorFn = DefaultProjectorFn<Result>
 > extends Selector<State, Result> {
   release(): void;
-  projector: OptionallyStrictProjectorFn<ProjectorFn>;
+  projector: SelectorProjectorFn<ProjectorFn>;
   setResult: (result?: Result) => void;
   clearResult: () => void;
 }
